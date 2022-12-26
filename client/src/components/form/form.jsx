@@ -8,11 +8,12 @@ import { updatePost } from "../../actions/posts.action.js";
 
 
 function Form({currentId, setCurrentId}) {
-  const emptyPost = {creator: '', title: '', message: '', tags: '', selectedFile: ''};
+  const emptyPost = { title: '', message: '', tags: '', selectedFile: ''};
   const [postData, setPostData] = useState(emptyPost);
   const styles = useStyle();
   const post = useSelector((state) => (currentId? state.postsReducer.find(p => p._id === currentId): null))
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem('profile'))
   useEffect(() => {
     if(post) {
       setPostData(post);
@@ -26,25 +27,28 @@ function Form({currentId, setCurrentId}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(updatePost(currentId, {...postData, name: user?.result.name }));
     } else {
-      dispatch(createPost(postData));
+      if(postData.title !== '' && postData.message !== '')
+      dispatch(createPost({...postData, name: user?.result.name}));
     }
     clear();
+  };
+
+  if(!user?.result) {
+    return (
+      <Paper className={styles.paper}>
+        <Typography variant="h6" align="center">
+          Please sign in to create your own memory
+        </Typography>
+      </Paper>
+    )
   }
 
   return (
     <Paper className={styles.paper}>
       <form autoComplete="off" noValidate className={`${styles.form} ${styles.root}`} onSubmit={handleSubmit}>
-        <Typography variant="h6" >{currentId ? `Edit` : `Create`} a Memory</Typography>
-        <TextField 
-        name="creator" 
-        variant="outlined" 
-        label="Creator" 
-        fullWidth
-        value={postData.creator}
-        onChange={(e) => setPostData({...postData, creator: e.target.value})} 
-        />
+        <Typography variant="h6" >{currentId ? `Edit` : `Create`} a Memory</Typography> 
         <TextField 
         name="title" 
         variant="outlined" 
@@ -75,8 +79,8 @@ function Form({currentId, setCurrentId}) {
             multiple={false}
             onDone={({base64}) => setPostData({...postData, selectedFile:base64})}
           />
-          <Button className={styles.buttonSubmit} variant="contained" color="primary" onClick={handleSubmit} size="large" type="submit" fullWidth >Submit</Button>
-          <Button variant="contained" color="secondary" size="small" onClick={clear} fullWidth >Clear</Button>
+          <Button className={styles.buttonSubmit} variant="outlined" onClick={handleSubmit} size="large" type="submit" fullWidth >Submit</Button>
+          <Button className={styles.buttonClear} variant="outlined" size="small" onClick={clear} fullWidth >Clear</Button>
         </div>
       </form>
     </Paper>

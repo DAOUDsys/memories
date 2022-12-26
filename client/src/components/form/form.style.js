@@ -17,11 +17,29 @@ export default makeStyles((theme) => ({
   fileInput: {
     width: "97%",
     margin: "10px 0",
+    overflow: "hidden",
     "& .MuiButtonBase-root": {
       marginTop: theme.spacing(1),
     },
   },
   buttonSubmit: {
     marginBottom: 10,
+    color: "white",
+    fontWeight: 400,
+    backgroundColor: "rgb(48, 63, 159)",
+    borderRadius: 50,
+    '&:hover': {
+    color: "rgb(48, 63, 159)",
+    }
+  },
+  buttonClear: {
+    color: "white",
+    fontWeight: 400,
+    backgroundColor: "rgb(255, 22, 126)",
+    borderRadius: 50,
+    
+    '&:hover': {
+    color: "rgb(255, 22, 126)",
+    }
   },
 }));

@@ -3,11 +3,13 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { connectDB, PORT } from "./config/connectDB.js";
 import postRouter from "./routes/post.js";
+import authRouter from './routes/auth.js'
 import morgan from 'morgan';
+import dotenv from 'dotenv';
 
 const app = express();
-
-
+dotenv.config();
+app.disable('etag');
 
 // use dependencies
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
@@ -17,6 +19,7 @@ app.use(morgan("dev"));
 
 // routers
 app.use("/posts", postRouter);
+app.use("/auth", authRouter);
 
 // connect mongoose
 connectDB();

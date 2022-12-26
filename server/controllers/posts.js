@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
-import PostModule from "../models/posts_message.js";
+import PostModule from "../models/posts.module.js";
+
 // @desc     Get posts
 // @route    GET /posts
 // @access   Public
 export const getPosts = async (req, res) => {
   try {
     const data = await PostModule.find();
-    
+
     res.status(200).json(data);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
 };
 // @desc     Create post
@@ -17,7 +18,7 @@ export const getPosts = async (req, res) => {
 // @access   Public
 export const createPosts = async (req, res) => {
   const body = req.body;
-  const newPost = await PostModule.create(body);
+  const newPost = await PostModule.create({ ...body, creator: req.userId });
   try {
     await newPost.save();
     res.status(201).json(newPost);
@@ -60,13 +61,42 @@ export const deletePost = async (req, res) => {
 // @access   Public
 export const likePost = async (req, res) => {
   const id = req.params.id;
+  if (!req.userId) {
+    return res.status(400).json({ message: "there is no logged in user" });
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404).send("there is no post with this id");
+    return res.status(404).send("there is no post with this id");
   }
   try {
-  const post = await PostModule.findById(id);
-  await PostModule.findByIdAndUpdate(id, {likeCount: post.likeCount + 1}, {new: true})
-    res.status(200).json({});
+    const post = await PostModule.findById(id);
+    const index = post.likes.findIndex((id) => id === String(req.userId));
+    // like post
+    if (index === -1) {
+      post.likes.push(req.userId);
+    } else {
+      // dislike post
+
+      post.likes = post.likes.filter((id) => id !== String(req.userId));
+    }
+    await PostModule.findByIdAndUpdate(id, post, { new: true });
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
+// @desc     Search posts
+// @route    GET /posts/search/?searchQuery={}&tags={}
+// @access   Public
+export const searchPosts = async (req, res) => {
+  const search = req.query.searchQuery;
+  const tags = req.query.tags;
+  try {
+    const title = new RegExp(search, "i");
+    const posts = await PostModule.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+
+    res.status(200).json({ data: posts });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
