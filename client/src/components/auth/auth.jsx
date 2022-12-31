@@ -72,6 +72,8 @@ function Auth() {
   };
   const handleShowPassword = () => setShowPassword(!showPassword);
 
+  const handleForget = () => { }
+
   return (
     <Container component="main" maxWidth="xs">
       <Paper className={styles.paper} elevation={3}>
@@ -159,6 +161,11 @@ function Auth() {
                 {isSignUp
                   ? "Already have account? Sign In"
                   : "Don't have account? Sign Up"}
+              </Button>
+              <Button onClick={handleForget}>
+                {!isSignUp
+                  && "Forget Password"
+                  }
               </Button>
             </Grid>
           </Grid>

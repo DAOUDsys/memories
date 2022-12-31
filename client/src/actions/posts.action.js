@@ -6,6 +6,7 @@ import {
   deletePostApi,
   likePostApi,
   fetchposts,
+  pushComment,
 } from "../api/api_controller";
 import { postsActionTypes } from "../constants/action_types";
 // action creators
@@ -80,6 +81,14 @@ export const searchPosts = (searchQuery) => async (dispatch) => {
     } = await fetchposts(searchQuery);
     dispatch({ type: postsActionTypes.SEARCH, payload: data });
     dispatch({ type: postsActionTypes.STOP_LOADING });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const addComment = (comment, id) => async (dispatch) => {
+  try {
+    const { data } = await pushComment(comment, id);
+    dispatch({ type: postsActionTypes.ADD_COMMENT, payload: data });
   } catch (error) {
     console.log(error);
   }

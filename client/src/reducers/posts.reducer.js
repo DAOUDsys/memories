@@ -29,6 +29,7 @@ const postsReducer = (state = { isLoading: true, posts: [] }, action) => {
       return { ...state, posts: [...state.posts, action.payload] };
     case postsActionTypes.UPDATE:
     case postsActionTypes.LIKE:
+    case postsActionTypes.ADD_COMMENT:
       return {
         ...state,
         posts: state.posts.map((post) =>

@@ -6,6 +6,8 @@ import { Paper, Typography, Divider, Grid } from "@material-ui/core";
 import Skeleton from "@mui/material/Skeleton";
 import useStyles from "./post_details.style.js";
 import { getPost, searchPosts } from "../../actions/posts.action.js";
+import Comments from "./comments.jsx";
+import Post from "../posts/post/post.jsx";
 
 function PostDetails() {
   const styles = useStyles();
@@ -42,7 +44,6 @@ function PostDetails() {
   if (!post) return null;
   let recommendedPosts;
   if (searchResult) {
-    console.log(searchResult);
     recommendedPosts = searchResult?.filter(({ _id }) => _id !== post?._id);
   }
 
@@ -73,9 +74,7 @@ function PostDetails() {
             <strong>Realtime Chat - coming soon!</strong>
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
-          <Typography variant="body1">
-            <strong>Comments - coming soon!</strong>
-          </Typography>
+          <Comments post={post} />
           <Divider style={{ margin: "20px 0" }} />
         </div>
         <div className={styles.imageSection}>
@@ -89,25 +88,24 @@ function PostDetails() {
           />
         </div>
       </div>
-      {recommendedPosts?.length && (
+      {recommendedPosts?.length ? (
         <div className={styles.sections}>
-          <Typography gutterBottom variant="h5">
+          <Typography gutterBottom variant="h5" color="secondary">
             You might also like:
           </Typography>
           <Divider />
           <div className={styles.recommendedPosts}>
             {recommendedPosts.map((post) => {
-              return <div style={{margin: '20px', cursor: 'pointer'}} onClick={() => openPost(post._id)} key={post._id}>
-                <Typography gutterBottom variant="h6" >{post.title}</Typography>
-                <Typography gutterBottom variant="subtitle2" >{post.name}</Typography>
-                <Typography gutterBottom variant="subtitle2" >{post.message}</Typography>
-                <Typography gutterBottom variant="subtitle1" >{post.likes.length}</Typography>
-                <img src={post.selectedFile} width="200px" alt={`${post.title}`} />
-              </div>;
+              return (
+                <div className={styles.recommended}>
+                <Post post={{...post, message: '', tags: []}} setCurrentId={post._id} />
+                </div>
+              );
             })}
           </div>
+          
         </div>
-      )}
+      ): null}
     </Paper>
   );
 }

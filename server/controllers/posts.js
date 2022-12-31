@@ -128,3 +128,19 @@ export const searchPosts = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+// @desc     Add comment
+// @route    Post /posts/:id/comment
+// @access   Public
+export const addComment = async (req, res) => {
+  const comment = req.body.comment;
+  const id = req.params.id;
+  try {
+    const post = await PostModule.findById(id);
+    post.comments.push(comment);
+    const updatedPost = await PostModule.findByIdAndUpdate(id, post, {new: true});
+
+    res.status(200).json({ data: updatedPost });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};

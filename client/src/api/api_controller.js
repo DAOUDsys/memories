@@ -25,6 +25,8 @@ export const createPostApi = (newPost) => API.post("/posts", newPost);
 export const updatePostApi = (id, oldPost) => API.put(`/posts/${id}`, oldPost);
 export const deletePostApi = (id) => API.delete(`/posts/${id}`);
 export const likePostApi = (id) => API.put(`/posts/${id}/likepost`);
+export const pushComment = (comment, id) => API.post(`/posts/${id}/comment`, {comment});
+
 
 // auth methods
 export const signInApi = (formData) => API.post(`/auth/login`, formData);

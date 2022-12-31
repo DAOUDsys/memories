@@ -8,6 +8,7 @@ export const postsActionTypes = {
   SEARCH: "SEARCH",
   START_LOADING: "START_LOADING",
   STOP_LOADING: "STOP_LOADING",
+  ADD_COMMENT: "ADD_COMMENT",
 };
 export const authActionTypes = {
   AUTH: "AUTH",
