@@ -3,8 +3,11 @@ export const postsActionTypes = {
   UPDATE: "UPDATE",
   DELETE: "DELETE",
   FETCH_ALL: "FETCH_ALL",
+  FETCH_POST: "FETCH_POST",
   LIKE: "LIKE",
   SEARCH: "SEARCH",
+  START_LOADING: "START_LOADING",
+  STOP_LOADING: "STOP_LOADING",
 };
 export const authActionTypes = {
   AUTH: "AUTH",

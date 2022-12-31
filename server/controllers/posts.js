@@ -5,8 +5,35 @@ import PostModule from "../models/posts.module.js";
 // @route    GET /posts
 // @access   Public
 export const getPosts = async (req, res) => {
+  const page = req.query.page;
   try {
-    const data = await PostModule.find();
+    const limit = 9;
+    const startIndex = (Number(page) - 1) * limit; // get the starting index for every page
+    const total = await PostModule.countDocuments({});
+
+    const data = await PostModule.find()
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip(startIndex);
+
+    res
+      .status(200)
+      .json({
+        data,
+        currentPage: Number(page),
+        numberOfPages: Math.ceil(total / limit),
+      });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+// @desc     Get post
+// @route    GET /posts/:id
+// @access   Public
+export const getPost = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await PostModule.findById(id);
 
     res.status(200).json(data);
   } catch (error) {

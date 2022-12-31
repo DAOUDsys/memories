@@ -3,16 +3,17 @@ import useStyle from './form.style.js';
 import {TextField, Button, Typography, Paper} from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import {useDispatch, useSelector} from 'react-redux';
-import { createPost } from "../../actions/posts.action.js";
-import { updatePost } from "../../actions/posts.action.js";
+import { createPost, updatePost } from "../../actions/posts.action.js";
+import { useNavigate } from "react-router-dom";
 
 
 function Form({currentId, setCurrentId}) {
   const emptyPost = { title: '', message: '', tags: '', selectedFile: ''};
   const [postData, setPostData] = useState(emptyPost);
   const styles = useStyle();
-  const post = useSelector((state) => (currentId? state.postsReducer.find(p => p._id === currentId): null))
+  const post = useSelector((state) => (currentId? state.postsReducer.posts.find(p => p._id === currentId): null))
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('profile'))
   useEffect(() => {
     if(post) {
@@ -30,7 +31,7 @@ function Form({currentId, setCurrentId}) {
       dispatch(updatePost(currentId, {...postData, name: user?.result.name }));
     } else {
       if(postData.title !== '' && postData.message !== '')
-      dispatch(createPost({...postData, name: user?.result.name}));
+      dispatch(createPost({...postData, name: user?.result.name}, navigate));
     }
     clear();
   };
@@ -46,7 +47,7 @@ function Form({currentId, setCurrentId}) {
   }
 
   return (
-    <Paper className={styles.paper}>
+    <Paper className={styles.paper} elevation={6} >
       <form autoComplete="off" noValidate className={`${styles.form} ${styles.root}`} onSubmit={handleSubmit}>
         <Typography variant="h6" >{currentId ? `Edit` : `Create`} a Memory</Typography> 
         <TextField 

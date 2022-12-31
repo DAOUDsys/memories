@@ -30,10 +30,9 @@ const Home = () => {
   const query = useQuery();
   const navigate = useNavigate();
   const page = query.get("page") || 1;
-  const searchQuery = query.get("searchQuery");
 
   useEffect(() => {
-    dispatch(getPosts());
+    dispatch(getPosts(page));
   }, [currentId, dispatch]);
 
   const handleSearch = (e) => {
@@ -107,7 +106,7 @@ const Home = () => {
             </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
             <Paper className={styles.pagination} elevation={6}>
-              <Paginate />
+              <Paginate page={page} />
             </Paper>
           </Grid>
         </Grid>

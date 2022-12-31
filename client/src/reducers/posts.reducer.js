@@ -1,21 +1,45 @@
 import { postsActionTypes } from "../constants/action_types";
 // when we dispatch an action it will be received here because this reducer is used in combine reducer
 /// [state] is posts data
-const postsReducer = (state = [], action) => {
+const postsReducer = (state = { isLoading: true, posts: [] }, action) => {
   switch (action.type) {
+    case postsActionTypes.START_LOADING:
+      return { ...state, isLoading: true };
+    case postsActionTypes.STOP_LOADING:
+      return { ...state, isLoading: false };
     case postsActionTypes.FETCH_ALL:
-      return action.payload;
+      return {
+        ...state,
+        posts: action.payload.data,
+        currentPage: action.payload.currentPage,
+        numberOfPages: action.payload.numberOfPages,
+      };
+    case postsActionTypes.SEARCH:
+      return {
+        ...state,
+        posts: action.payload,
+        searchResult: action.payload,
+      };
+    case postsActionTypes.FETCH_POST:
+      return {
+        ...state,
+        post: action.payload,
+      };
     case postsActionTypes.CREATE:
-      return [...state, action.payload];
+      return { ...state, posts: [...state.posts, action.payload] };
     case postsActionTypes.UPDATE:
     case postsActionTypes.LIKE:
-      return state.map((post) =>
-        post._id === action.payload._id ? action.payload : post
-      );
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === action.payload._id ? action.payload : post
+        ),
+      };
     case postsActionTypes.DELETE:
-      return state.filter((post) => post._id !== action.payload._id);
-    case postsActionTypes.SEARCH:
-      return action.payload;
+      return {
+        ...state,
+        posts: state.posts.filter((post) => post._id !== action.payload._id),
+      };
     default:
       return state;
   }

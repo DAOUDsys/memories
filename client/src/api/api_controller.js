@@ -13,10 +13,13 @@ API.interceptors.request.use((req) => {
 });
 
 // posts methods
-export const fetchPosts = () => API.get("/posts");
-export const fetchSearchedPosts = (searchQuery) =>
+export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
+export const fetchPost = (id) => API.get(`/posts/${id}`);
+export const fetchposts = (searchQuery) =>
   API.get(
-    `/posts/search?searchQuery=${searchQuery.search || "none"}&tags=${searchQuery.tags}`
+    `/posts/search/s?searchQuery=${searchQuery.search || "none"}&tags=${
+      searchQuery.tags
+    }`
   );
 export const createPostApi = (newPost) => API.post("/posts", newPost);
 export const updatePostApi = (id, oldPost) => API.put(`/posts/${id}`, oldPost);
